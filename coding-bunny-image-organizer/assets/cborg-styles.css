@@ -1,287 +1,390 @@
-/* ===== ROOT VARIABLES ===== */
+/* ==========================================================================
+   1. ROOT
+   ========================================================================== */
 :root {
-	--cb-white: #FFFFFF;
-	--cb-light-grey-1: #D9D9D9;
-	--cb-blue: #2370B0;
-	--cb-light-blue: #F0F6FC;
+	--cborg-primary: #c1006f;
+	--cborg-secondary: #ff66b2;
+	--cborg-white: #ffffff;
+	--cborg-black: #2b3337;
+	--cborg-wine: #121415;
+	--cborg-gray: #e3e8ef;
+	--cborg-red: #dc2626;
+	--cborg-green: #0a875a;
+	--cborg-text: 13px;
+	--cborg-small-text: 10px;
 	--cborg-sidebar-width: 300px;
 }
 
-/* ===== SIDEBAR CONTAINER ===== */
+/* ==========================================================================
+   2. LAYOUT
+   ========================================================================== */
 #cborg-global-container {
 	display: flex;
 	align-items: flex-start;
 	width: 100%;
 }
 
-/* ===== SIDEBAR ===== */
+#cborg-global-container > .wrap {
+	flex: 1;
+	min-width: 0;
+}
+
+/* ==========================================================================
+   3. SIDEBAR
+   ========================================================================== */
 #cborg-sidebar {
-	display: flex;
-	flex-direction: column;
-	min-width: 300px;
-	max-width: 500px;
-	width: var(--cborg-sidebar-width, 300px);
-	margin-right: 18px;
 	position: sticky;
 	top: 50px;
 	z-index: 10;
-	background: var(--cb-white);
-	height: fit-content;
+	display: flex;
+	flex-direction: column;
 	align-self: flex-start;
 	box-sizing: border-box;
-	border: 1px solid #ddd;
-	padding: 12px;
+	width: var(--cborg-sidebar-width, 300px);
+	min-width: 300px;
+	max-width: 500px;
+	height: fit-content;
+	margin: 10px 18px 0 0;
+	padding: 0;
+	background: var(--cborg-black);
+	color: var(--cborg-white);
 	transition: width 0.1s;
 }
 
-/* ===== SIDEBAR RESIZE HANDLE ===== */
 #cborg-sidebar-resize-handle {
 	position: absolute;
-	right: -6px;
 	top: 0;
+	right: -6px;
+	z-index: 99;
 	width: 12px;
 	height: 100%;
-	cursor: col-resize;
-	z-index: 99;
 	background: transparent;
+	cursor: col-resize;
 }
+
 #cborg-sidebar-resize-handle:hover {
-	background: rgba(35,112,176,0.1);
+	background: rgba(193, 0, 111, 0.15);
 }
+
 @media (max-width: 1100px) {
 	#cborg-sidebar-resize-handle {
 		display: none;
 	}
 }
 
-/* ===== SIDEBAR TITLE ===== */
-.cborg-sidebar-title {
+/* ==========================================================================
+   4. HEADER & TOOLBAR
+   ========================================================================== */
+#cborg-sidebar .cborg-sidebar-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 10px 16px;
+	background: var(--cborg-wine);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#cborg-sidebar .cborg-sidebar-title {
+	margin: 0;
+	color: var(--cborg-secondary);
+	font-size: var(--cborg-small-text);
+	font-weight: 600;
+	line-height: 1.4;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+#cborg-sidebar .cborg-toolbar {
+	display: flex;
+	gap: 4px;
 	margin: 0;
 }
 
-/* ===== SIDEBAR LISTS & LINKS ===== */
-#cborg-sidebar ul {
-	list-style: none;
+#cborg-sidebar .cborg-toolbar-btn,
+#cborg-sidebar .cborg-toolbar-btn.button.button-small {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	min-height: 28px;
 	margin: 0;
 	padding: 0;
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 3px;
+	box-shadow: none;
+	color: var(--cborg-white);
+	cursor: pointer;
+	transition: opacity 0.2s ease, border-color 0.2s ease;
 }
+
+#cborg-sidebar .cborg-toolbar-btn:hover,
+#cborg-sidebar .cborg-toolbar-btn:focus {
+	background: transparent;
+	border-color: var(--cborg-secondary);
+	color: var(--cborg-white);
+	opacity: 0.8;
+	box-shadow: none;
+}
+
+#cborg-sidebar .cborg-toolbar-btn .dashicons {
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	border: none;
+	font-size: 16px;
+	line-height: 1;
+	color: var(--cborg-white);
+}
+
+#cborg-sidebar #cborg-delete-category .dashicons {
+	color: #f87171;
+}
+
+#cborg-sidebar #cborg-delete-category:hover {
+	border-color: var(--cborg-red);
+}
+
+.cborg-btn-disabled {
+	opacity: 0.4;
+	pointer-events: none;
+}
+
+/* ==========================================================================
+   5. CATEGORY LIST
+   ========================================================================== */
+#cborg-sidebar ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
 #cborg-sidebar ul > li {
 	margin: 0 !important;
 	padding: 0 !important;
-	line-height: 1.05;
-}
-#cborg-sidebar ul > li > a {
-	padding-top: 1px;
-	padding-bottom: 1px;
-	display: flex;
-	align-items: center;
-}
-#cborg-sidebar ul li a {
-	text-decoration: none;
-	color: var(--cb-blue);
-	display: flex;
-	align-items: center;
-	padding: 4px 6px;
-	margin: 0;
-}
-#cborg-sidebar ul li a:hover,
-#cborg-sidebar ul li a.active {
-	background: var(--cb-light-blue);
-}
-#cborg-sidebar ul li a.active {
-	font-weight: 600;
+	line-height: 1.4;
 }
 
-/* ===== CATEGORY LINK & COUNT ===== */
 #cborg-sidebar .cborg-cat-link {
 	display: flex;
 	align-items: center;
-	padding: 6px 8px;
+	gap: 8px;
+	margin: 0;
+	padding: 9px 16px;
+	color: var(--cborg-white);
+	font-size: var(--cborg-text);
 	text-decoration: none;
-	border-radius: 4px;
-	transition: background 0.2s;
-}
-#cborg-sidebar .cborg-cat-link.active {
-	background: var(--cb-light-blue);
-}
-#cborg-sidebar .cborg-cat-count {
-	margin-left: auto;
-	color: inherit;
-	font-size: 13px;
-	font-weight: 500;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+	box-shadow: none;
+	transition: opacity 0.15s ease, background 0.15s ease;
 }
 
-/* ===== CATEGORY DIVIDER ===== */
-#cborg-sidebar .cborg-cat-divider {
-	border: none;
-	border-top: 1px solid var(--cb-light-grey-1);
-	margin: 8px 0 8px 0;
+#cborg-sidebar .cborg-cat-link:hover,
+#cborg-sidebar .cborg-cat-link:focus {
+	color: var(--cborg-white);
+	opacity: 0.7;
+	box-shadow: none;
 }
+
+#cborg-sidebar .cborg-cat-link.active,
+#cborg-sidebar .cborg-cat-link.active:hover {
+	background: var(--cborg-primary);
+	font-weight: 600;
+	opacity: 1;
+}
+
+#cborg-sidebar .cborg-subcats {
+	margin-left: 0 !important;
+	background: rgba(0, 0, 0, 0.15);
+}
+
+#cborg-sidebar .cborg-subcats .cborg-cat-link {
+	padding-left: 36px;
+}
+
+#cborg-sidebar .cborg-subcats .cborg-subcats .cborg-cat-link {
+	padding-left: 56px;
+}
+
+#cborg-sidebar li.cborg-has-children > .cborg-cat-link {
+	cursor: pointer;
+}
+
+#cborg-sidebar .cborg-cat-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	line-height: 1;
+}
+
+#cborg-sidebar .cborg-cat-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	line-height: 20px;
+}
+
+#cborg-sidebar .cborg-cat-link .dashicons {
+	flex-shrink: 0;
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+	line-height: 1;
+	color: var(--cborg-white);
+}
+
+#cborg-sidebar .cborg-cat-link .dashicons-lock {
+	color: #1beca0;
+}
+
+#cborg-sidebar .cborg-cat-link.active .dashicons {
+	color: var(--cborg-white) !important;
+}
+
+#cborg-sidebar .cborg-cat-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	min-width: 12px;
+	margin-left: auto;
+	padding: 1px 5px;
+	background: rgba(255, 255, 255, 0.12);
+	border-radius: 2px;
+	color: var(--cborg-white);
+	font-size: var(--cborg-small-text);
+	font-weight: 400;
+	letter-spacing: 0.02em;
+}
+
+#cborg-sidebar .cborg-cat-count:empty {
+	display: none;
+}
+
+#cborg-sidebar .cborg-cat-link.active .cborg-cat-count {
+	background: var(--cborg-white);
+	color: var(--cborg-black);
+}
+
 #cborg-sidebar .cborg-divider {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-/* ===== FOLDER TOGGLE & INDENT ===== */
-.cborg-folder-toggle {
-	display: inline-block;
-	width: 14px;
-	height: 14px;
-	margin-right: 7px;
-	vertical-align: middle;
-	cursor: pointer;
-	background: url('data:image/svg+xml;utf8,<svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M5 3l4 4-4 4" stroke="%232370B0" stroke-width="2" fill="none" /></svg>') no-repeat center center;
-	transition: transform 0.2s;
+#cborg-sidebar .cborg-cat-divider {
+	margin: 0;
+	border: none;
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
+
+/* ==========================================================================
+   6. FOLDER TOGGLE
+   ========================================================================== */
+.cborg-folder-toggle,
 .cborg-folder-spacer {
 	display: inline-block;
+	flex-shrink: 0;
 	width: 14px;
 	height: 14px;
-	margin-right: 7px;
 	vertical-align: middle;
 }
+
+.cborg-folder-toggle {
+	cursor: pointer;
+	background: url('data:image/svg+xml;utf8,<svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M5 3l4 4-4 4" stroke="%23ff66b2" stroke-width="2" fill="none" /></svg>') no-repeat center center;
+	transition: transform 0.2s;
+}
+
+.cborg-cat-link.active .cborg-folder-toggle {
+	background-image: url('data:image/svg+xml;utf8,<svg width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M5 3l4 4-4 4" stroke="%23ffffff" stroke-width="2" fill="none" /></svg>');
+}
+
 li.cborg-open > a > .cborg-folder-toggle {
 	transform: rotate(90deg);
 }
-.cborg-subcats {
-	margin-left: 22px !important;
-}
-#cborg-sidebar li.cborg-has-children > .cborg-cat-link {
-	cursor: pointer;
+
+/* ==========================================================================
+   7. FOOTER & EXPORT
+   ========================================================================== */
+#cborg-sidebar .cborg-sidebar-footer {
+	padding: 12px 16px;
+	background: var(--cborg-wine);
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-/* ===== TOOLBAR & BUTTONS ===== */
-#cborg-sidebar .cborg-toolbar {
-	margin: 10px 0;
+#cborg-sidebar #cborg-export-zip {
 	display: flex;
-	justify-content: flex-end;
-	gap: 4px;
-}
-.cborg-toolbar-btn {
-	background: none;
-	border: none;
-	cursor: pointer;
-	padding: 0;
-}
-.button .button-small .cborg-toolbar-btn .cborg-edit-cat {
-	border: none;
-}
-.wp-core-ui .button.button-small {
-	border: none;
-	padding: 0;
-}
-.cborg-btn-disabled {
-	opacity: 0.5;
-	pointer-events: none;
-}
-
-/* ===== LABEL & ICONS ===== */
-#cborg-sidebar .dashicons-edit,
-#cborg-sidebar .dashicons-plus-alt2,
-#cborg-sidebar .dashicons-trash,
-#cborg-sidebar .dashicons-admin-page {
-	font-size: 22px;
-	width: 22px;
-	height: 22px;
-	vertical-align: middle;
-	border-radius: 3px;
-	padding: 5px;
-	border: solid 1px var(--cb-blue);
-}
-#cborg-sidebar .dashicons-lock,
-#cborg-sidebar .dashicons-category,
-#cborg-sidebar .dashicons-open-folder,
-#cborg-sidebar .dashicons-download,
-#cborg-sidebar .dashicons-images-alt2 {
-	font-size: 22px;
-	width: 22px;
-	height: 22px;
-	vertical-align: middle;
-}
-#cborg-sidebar .dashicons-lock {
-	color: #34A853;
-}
-#cborg-sidebar .dashicons-trash {
-	color: #d32f2f;
-	border-color: #d32f2f;
-}
-#cborg-sidebar .dashicons-admin-page {
-	color: #2370B0;
-	border-color: #2370B0;
-}
-#cborg-sidebar .dashicons-lock,
-#cborg-sidebar .dashicons-category,
-#cborg-sidebar .dashicons-open-folder,
-#cborg-sidebar .dashicons-images-alt2,
-#cborg-sidebar .dashicons-download {
-	margin-right: 4px;
-}
-
-.cborg-cat-label {
-	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	gap: 6px;
-	line-height: 1;
-}
-
-.cborg-cat-text {
-	display: inline-block;
-	vertical-align: middle;
-	line-height: 20px;
-}
-
-.cborg-cat-link .dashicons {
-	vertical-align: middle;
-	line-height: 20px;
-	width: 20px;
-	height: 20px;
-	font-size: 20px;
-}
-
-.cborg-cat-link {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-/* ===== DRAG & DROP EFFECTS ===== */
-.cborg-drag-helper {
-	pointer-events: none;
-	background: var(--cb-light-blue);
-	color: var(--cb-blue);
-	border-radius: 4px;
-	padding: 2px 8px;
-	font-size: 14px;
-	margin-left: 3px;
-	display: inline-block;
-}
-.cborg-drop-hover {
-	background: #ffd;
-}
-
-/* ===== EXPORT ZIP BUTTON ===== */
-#cborg-export-zip {
 	width: 100%;
-	display: block;
-	margin-top: 20px;
+	min-height: 32px;
+	margin: 0;
+	padding: 8px 12px;
+	background: var(--cborg-primary);
+	border: none;
+	border-radius: 4px;
+	box-shadow: none;
+	text-shadow: none;
+	color: var(--cborg-white);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
 }
 
-/* ===== TOOLTIP ===== */
+#cborg-sidebar #cborg-export-zip:hover,
+#cborg-sidebar #cborg-export-zip:focus {
+	opacity: 0.7;
+}
+
+#cborg-sidebar #cborg-export-zip .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+	line-height: 1;
+	vertical-align: middle;
+	color: var(--cborg-white);
+}
+
+/* ==========================================================================
+   8. DRAG & DROP
+   ========================================================================== */
+.cborg-drag-helper {
+	display: inline-block;
+	margin-left: 3px;
+	padding: 2px 8px;
+	background: var(--cborg-primary);
+	border-radius: 3px;
+	color: var(--cborg-white);
+	font-size: 12px;
+	pointer-events: none;
+}
+
+#cborg-sidebar .cborg-cat-link.cborg-drop-hover {
+	background: rgba(255, 102, 178, 0.25);
+	opacity: 1;
+	outline: 1px dashed var(--cborg-secondary);
+	outline-offset: -1px;
+}
+
+/* ==========================================================================
+   9. TOOLTIP
+   ========================================================================== */
 .cborg-tooltip {
 	position: absolute;
 	z-index: 9999;
-	background: var(--cb-blue);
-	color: var(--cb-white);
 	padding: 4px 8px;
-	border-radius: 4px;
-	font-size: 12px;
+	background: var(--cborg-wine);
+	border-radius: 3px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+	color: var(--cborg-white);
+	font-size: 11px;
 	white-space: nowrap;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-/* ===== WRAP (MAIN CONTENT AREA) ===== */
-.wrap {
-	flex: 1;
-	min-width: 0;
 }

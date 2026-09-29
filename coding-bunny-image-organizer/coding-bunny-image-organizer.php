@@ -2,18 +2,20 @@
 /*
 Plugin Name: CodingBunny Image Organizer
 Description: An add-on for CodingBunny Image Optimizer to organize images in the Media Library with categories.
-Version: 1.2.0
+Version: 1.2.1
 Requires at least: 6.0
 Requires PHP: 8.0
 Author: CodingBunny
 Text Domain: coding-bunny-image-organizer
 Domain Path: /languages
 License: GPLv2 or later
-Requires Plugins: coding-bunny-image-optimizer
+Requires Plugins: coding-bunny-image-optimizer-lite
 Update URI: false
 */
 
 if (!defined('ABSPATH')) exit;
+
+if (!defined('CBORG_PLUGIN_BASENAME')) define('CBORG_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 require_once __DIR__ . '/includes/class-cborg.php';
 

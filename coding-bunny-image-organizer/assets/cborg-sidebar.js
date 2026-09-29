@@ -27,10 +27,10 @@
 				<a href="${editUrl}" class="button button-small cborg-toolbar-btn cborg-edit-cat" target="_blank" rel="noopener" title="${window.CBORG_VARS?.i18n?.editCat || 'Edit Category'}">
 					<span class="dashicons dashicons-edit"></span>
 				</a>
-				<button id="cborg-copy-category" class="button button-small cborg-toolbar-btn" title="Copy Category">
+				<button id="cborg-copy-category" class="button button-small cborg-toolbar-btn" title="${window.CBORG_VARS?.i18n?.copyCat || 'Copy Category'}">
 					<span class="dashicons dashicons-admin-page"></span>
 				</button>
-				<button id="cborg-delete-category" class="button button-small cborg-toolbar-btn" title="Delete Category">
+				<button id="cborg-delete-category" class="button button-small cborg-toolbar-btn" title="${window.CBORG_VARS?.i18n?.deleteCat || 'Delete Category'}">
 					<span class="dashicons dashicons-trash"></span>
 				</button>
 			</div>
@@ -153,11 +153,10 @@
 		roots.forEach(root => renderNode(root));
 
 		html += '</ul>';
-		html += '<li class="cborg-divider"><hr class="cborg-cat-divider" /></li>';
-		html += `<div style="text-align:center; width:100%;">
+		html += `<div class="cborg-sidebar-footer">
 			<button id="cborg-export-zip" class="button button-primary">
 				<span class="dashicons dashicons-download"></span>
-				Export Selected Category
+				${escapeHTML(window.CBORG_VARS?.i18n?.exportCat || 'Export Selected Category')}
 			</button>
 		</div>`;
 		html += '<div id="cborg-sidebar-resize-handle"></div>';

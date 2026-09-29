@@ -102,7 +102,7 @@ trait CBORG_Admin {
 						'slug'   => sanitize_text_field($c->slug),
 						'name'   => esc_html($c->name),
 						'count'  => count($unique_attachments),
-						'color'  => sanitize_hex_color(get_term_meta($c->term_id, 'term_color', true)) ?: '#2172b1',
+						'color'  => sanitize_hex_color(get_term_meta($c->term_id, 'term_color', true)) ?: '#ff66b2',
 					];
 				}
 			} else {
@@ -150,6 +150,11 @@ trait CBORG_Admin {
 					'cancel' => __('Cancel', 'coding-bunny-image-organizer'),
 					'noCategoriesAvailable' => __('No categories available. Create some categories first.', 'coding-bunny-image-organizer'),
 					'protected' => __('Protected', 'coding-bunny-image-organizer'),
+					'newCat' => __('New Category', 'coding-bunny-image-organizer'),
+					'editCat' => __('Edit Category', 'coding-bunny-image-organizer'),
+					'copyCat' => __('Copy Category', 'coding-bunny-image-organizer'),
+					'deleteCat' => __('Delete Category', 'coding-bunny-image-organizer'),
+					'exportCat' => __('Export Selected Category', 'coding-bunny-image-organizer'),
 				],
 				'categories' => $cat_data,
 				'protectorActive'   => $protector_active,
@@ -164,8 +169,8 @@ trait CBORG_Admin {
 	}
 
 	public function optimizer_dependency_check($plugin): void {
-		if ($plugin === 'coding-bunny-image-optimizer/coding-bunny-image-optimizer.php') {
-			deactivate_plugins(plugin_basename(__FILE__));
+		if (defined('CBIO_PLUGIN_FILE') && plugin_basename(CBIO_PLUGIN_FILE) === $plugin) {
+			deactivate_plugins(CBORG_PLUGIN_BASENAME);
 			add_action('admin_notices', function() {
 				echo '<div class="notice notice-warning"><p>'
 					. esc_html__( 'CodingBunny Image Organizer has been deactivated because CodingBunny Image Optimizer is no longer active.', 'coding-bunny-image-organizer' )
@@ -183,9 +188,9 @@ trait CBORG_Admin {
 	public function deactivate_if_no_optimizer(): void {
 		if (
 			current_user_can('activate_plugins') &&
-			is_plugin_active(plugin_basename(__FILE__))
+			is_plugin_active(CBORG_PLUGIN_BASENAME)
 		) {
-			deactivate_plugins(plugin_basename(__FILE__));
+			deactivate_plugins(CBORG_PLUGIN_BASENAME);
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if (isset($_GET['activate'])) {
 				unset($_GET['activate']);
@@ -283,7 +288,7 @@ trait CBORG_Admin {
 		?>
 		<div class="form-field term-color-wrap">
 			<label for="term-color"><?php esc_html_e('Color', 'coding-bunny-image-organizer'); ?></label>
-			<input name="term-color" id="term-color" type="color" value="#2172b1" />
+			<input name="term-color" id="term-color" type="color" value="#ff66b2" />
 			<?php wp_nonce_field('save_image_category_color', 'image_category_color_nonce'); ?>
 			<p class="description"><?php esc_html_e('Choose a color for this category', 'coding-bunny-image-organizer'); ?></p>
 		</div>
@@ -291,7 +296,7 @@ trait CBORG_Admin {
 	}
 
 	public function edit_category_color_field($term): void {
-		$color = sanitize_hex_color(get_term_meta($term->term_id, 'term_color', true)) ?: '#2172b1';
+		$color = sanitize_hex_color(get_term_meta($term->term_id, 'term_color', true)) ?: '#ff66b2';
 		?>
 		<tr class="form-field term-color-wrap">
 			<th scope="row"><label for="term-color"><?php esc_html_e('Color', 'coding-bunny-image-organizer'); ?></label></th>
@@ -399,7 +404,7 @@ trait CBORG_Admin {
 
 	public function render_color_column($content, $column_name, $term_id) {
 		if ($column_name === 'term_color') {
-			$color = sanitize_hex_color(get_term_meta($term_id, 'term_color', true)) ?: '#2172b1';
+			$color = sanitize_hex_color(get_term_meta($term_id, 'term_color', true)) ?: '#ff66b2';
 			$content = '<span style="display:inline-block;width:20px;height:20px;background:' . esc_attr($color) . ';border:1px solid #ccc;border-radius:50px;"></span>';
 		}
 		return $content;
