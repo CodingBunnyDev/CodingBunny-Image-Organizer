@@ -5,6 +5,7 @@ trait CBORG_Admin {
 	private $uncat_term_id = null;
 
 	public function register_admin_hooks() {
+		add_action('admin_init', [$this, 'maybe_migrate_color_meta']);
 		add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
 		add_action('deactivated_plugin', [$this, 'optimizer_dependency_check']);
 		add_action('init', [$this, 'load_textdomain']);
@@ -28,6 +29,33 @@ trait CBORG_Admin {
 			}
 			return;
 		}
+	}
+
+	public function maybe_migrate_color_meta(): void {
+		if ('1' === get_option('cborg_color_meta_migrated')) {
+			return;
+		}
+
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$term_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT tm.term_id FROM {$wpdb->termmeta} tm INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_id = tm.term_id WHERE tm.meta_key = %s AND tt.taxonomy = %s",
+				CodingBunny_Image_Organizer::LEGACY_COLOR_META_KEY,
+				'image_category'
+			)
+		);
+
+		foreach ((array) $term_ids as $term_id) {
+			$term_id = (int) $term_id;
+			$color   = sanitize_hex_color((string) get_term_meta($term_id, CodingBunny_Image_Organizer::LEGACY_COLOR_META_KEY, true));
+			if ($color && '' === (string) get_term_meta($term_id, CodingBunny_Image_Organizer::COLOR_META_KEY, true)) {
+				update_term_meta($term_id, CodingBunny_Image_Organizer::COLOR_META_KEY, $color);
+			}
+			delete_term_meta($term_id, CodingBunny_Image_Organizer::LEGACY_COLOR_META_KEY);
+		}
+
+		update_option('cborg_color_meta_migrated', '1', false);
 	}
 
 	public function exclude_uncategorized_from_admin_table($args, $taxonomies) {
@@ -102,7 +130,7 @@ trait CBORG_Admin {
 						'slug'   => sanitize_text_field($c->slug),
 						'name'   => esc_html($c->name),
 						'count'  => count($unique_attachments),
-						'color'  => sanitize_hex_color(get_term_meta($c->term_id, 'term_color', true)) ?: '#ff66b2',
+						'color'  => sanitize_hex_color(get_term_meta($c->term_id, CodingBunny_Image_Organizer::COLOR_META_KEY, true)) ?: '#ff66b2',
 					];
 				}
 			} else {
@@ -296,7 +324,7 @@ trait CBORG_Admin {
 	}
 
 	public function edit_category_color_field($term): void {
-		$color = sanitize_hex_color(get_term_meta($term->term_id, 'term_color', true)) ?: '#ff66b2';
+		$color = sanitize_hex_color(get_term_meta($term->term_id, CodingBunny_Image_Organizer::COLOR_META_KEY, true)) ?: '#ff66b2';
 		?>
 		<tr class="form-field term-color-wrap">
 			<th scope="row"><label for="term-color"><?php esc_html_e('Color', 'coding-bunny-image-organizer'); ?></label></th>
@@ -322,7 +350,7 @@ trait CBORG_Admin {
 			if (isset($_POST['term-color'])) {
 				update_term_meta(
 					$term_id,
-					'term_color',
+					CodingBunny_Image_Organizer::COLOR_META_KEY,
 					// phpcs:ignore WordPress.Security.NonceVerification.Missing
 					sanitize_hex_color(wp_unslash($_POST['term-color']))
 				);
@@ -343,7 +371,7 @@ trait CBORG_Admin {
 			if (isset($_POST['term-color'])) {
 				update_term_meta(
 					$term_id,
-					'term_color',
+					CodingBunny_Image_Organizer::COLOR_META_KEY,
 					// phpcs:ignore WordPress.Security.NonceVerification.Missing
 					sanitize_hex_color(wp_unslash($_POST['term-color']))
 				);
@@ -398,13 +426,13 @@ trait CBORG_Admin {
 	}
 
 	public function add_color_column($columns) {
-		$columns['term_color'] = __('Color', 'coding-bunny-image-organizer');
+		$columns['cborg_color'] = __('Color', 'coding-bunny-image-organizer');
 		return $columns;
 	}
 
 	public function render_color_column($content, $column_name, $term_id) {
-		if ($column_name === 'term_color') {
-			$color = sanitize_hex_color(get_term_meta($term_id, 'term_color', true)) ?: '#ff66b2';
+		if ($column_name === 'cborg_color') {
+			$color = sanitize_hex_color(get_term_meta($term_id, CodingBunny_Image_Organizer::COLOR_META_KEY, true)) ?: '#ff66b2';
 			$content = '<span style="display:inline-block;width:20px;height:20px;background:' . esc_attr($color) . ';border:1px solid #ccc;border-radius:50px;"></span>';
 		}
 		return $content;

@@ -12,7 +12,9 @@ final class CodingBunny_Image_Organizer {
     use CBORG_Admin;
     use CBORG_Helpers;
 
-    public const VERSION = '1.2.1';
+    public const VERSION = '1.2.2';
+    public const COLOR_META_KEY = '_cborg_term_color';
+    public const LEGACY_COLOR_META_KEY = 'term_color';
     public const PLUGIN_DIR = __DIR__;
     public const PLUGIN_URL = __DIR__;
     public const UNCATEGORIZED_SLUG = 'uncategorized';

@@ -2,7 +2,7 @@
 /*
 Plugin Name: CodingBunny Image Organizer
 Description: An add-on for CodingBunny Image Optimizer to organize images in the Media Library with categories.
-Version: 1.2.1
+Version: 1.2.2
 Requires at least: 6.0
 Requires PHP: 8.0
 Author: CodingBunny
